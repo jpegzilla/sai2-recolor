@@ -1,6 +1,6 @@
 ﻿# primary application colors
-MainPanelColor=212121
-CanvasBackgroundColor=111111
+MainPanelColor=CD5F2A
+CanvasBackgroundColor=FFFFFF
 ActiveCanvasBg=111111
 
 # scrollbars
