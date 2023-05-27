@@ -38,6 +38,19 @@ namespace SaiThemeColorChanger {
             }
         }
 
+        // https://stackoverflow.com/a/937558
+        static bool IsFileLocked(FileInfo file) {
+            try {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None)) {
+                    stream.Close();
+                }
+            } catch (IOException) { // file is in use or doesn't exist
+                return true;
+            }
+
+            return false;
+        }
+
         static void Log(string msg, ConsoleColor? fg = null, ConsoleColor? bg = null) {
             if (fg == null && bg == null) {
                 Console.ResetColor();
@@ -46,7 +59,8 @@ namespace SaiThemeColorChanger {
                 Console.BackgroundColor = (ConsoleColor)bg;
             }
 
-            Console.Out.WriteLine(msg);
+            Console.WriteLine(msg);
+            Console.ResetColor();
         }
 
         // https://stackoverflow.com/a/60492990
@@ -119,36 +133,42 @@ namespace SaiThemeColorChanger {
             }
 
             if (inputPath.Length == 0) {
-                LogColor("please drag the [sai2.exe] into this window and press enter.", ConsoleColor.Green);
+                LogColor("please drag the [sai2.exe] file into this window and press enter.\r\n", ConsoleColor.Green);
                 inputPath = @AddQuotesIfRequired(Console.ReadLine());
                 while (!Directory.Exists(Path.GetDirectoryName(inputPath))) {
-                    Console.Out.WriteLine("not a valid path: " + inputPath);
+                    LogColor($"[{inputPath}] is not a valid path.", ConsoleColor.Red);
                     inputPath = Console.ReadLine();
                 }
             }
 
             if (!Directory.Exists(Path.GetDirectoryName(inputPath))) {
-                Console.Out.WriteLine("not a valid path: " + inputPath);
+                LogColor($"[{inputPath}] is not a valid path.", ConsoleColor.Red);
                 Console.ReadKey();
                 return;
             }
 
-            string outputPath = inputPath; // Needs to be the same as the original or Sai throws a weird error with moonrunes
+            if (IsFileLocked(new FileInfo(inputPath))) {
+                LogColor("your copy of sai2.exe is in use. please try again after closing this program as well as sai2.", ConsoleColor.Red);
+                Environment.Exit(1);
+            }
+
+            // the output path has to be the same as the original file. ths is because the program will look for a .ini file
+            // with the same filename as the executable. for example, if you call sai "sai21.exe" instead of "sai2.exe", sai
+            // will complain that it's missing a "sai21.ini" file. you could just rename the .ini if you really wanted to.
+            string outputPath = inputPath;
 
             List<ReplacerHelper> toReplace = new List<ReplacerHelper>();
-            // TODO could probably make this just read out of a text file is people decide my gray is horrible
             // Hex color code -> replacement (won't work with pure white and pure black, but everything else seems fine!)
             // Basically this replaces left hex with the right hex.
             // You can swap out the values to get other colors, I haven't noticed any issues using a version with these values modified
-            toReplace.Add(new ReplacerHelper("f8f8f8", config.GetValueOrDefault("MainPanelColor", "212121"))); // Main panel color
-            toReplace.Add(new ReplacerHelper("c0c0c0", config.GetValueOrDefault("CanvasBackgroundColor", "111111"))); // Canvas background color
+            toReplace.Add(new ReplacerHelper("f8f8f8", config.GetValueOrDefault("MainPanelColor", "212121")));
+            toReplace.Add(new ReplacerHelper("c0c0c0", config.GetValueOrDefault("CanvasBackgroundColor", "111111")));
             toReplace.Add(new ReplacerHelper("e8e8e8", "3a3a3a")); // Scrollbar insides
             toReplace.Add(new ReplacerHelper("969696", "2a2a2a")); // Scrollbars
             toReplace.Add(new ReplacerHelper("f0f0f0", "212121")); // Tools background
             toReplace.Add(new ReplacerHelper("d4d4d4", "212121")); // Inactive scrollbar
             toReplace.Add(new ReplacerHelper("b0b0b0", "111111")); // Active canvas background
             toReplace.Add(new ReplacerHelper("e0e0e0", "313131")); // Tools panel background
-            // done
 
             toReplace.Add(new ReplacerHelper("b1b1b1", "313131")); // Panel borders 1
             toReplace.Add(new ReplacerHelper("d0d0d0", "313131")); // Panel borders 2
@@ -198,35 +218,56 @@ namespace SaiThemeColorChanger {
             toReplace.Add(new ReplacerHelper("b6cced", "a1a1a1")); // Canvas select border 3
             toReplace.Add(new ReplacerHelper("d9e4f8", "a1a1a1")); // Canvas select border 4
 
-            for (int i = 162; i <= 254; i++) {
-                toReplace.Add(new ReplacerHelper("" + i.ToString("X2") + i.ToString("X2") + i.ToString("X2"), "212121")); // Color wheel fix
-            }
+            // all colors above have values in config.txt now
+
+
+            // start color wheel code ---------------------------------------------------------
 
             // TODO: this code appears to try to fix the aliasing that occurs when drawing circles. the colors are close but probably
             // should be computed using the background color.
 
-            toReplace.Add(new ReplacerHelper("a6a6a6", "212121")); // Color wheel fix 1
-            toReplace.Add(new ReplacerHelper("707070", "212121")); // Color wheel fix 2
-            toReplace.Add(new ReplacerHelper("9f9f9f", "212121")); // Color wheel fix 3
-            toReplace.Add(new ReplacerHelper("a6a6a6", "212121")); // Color wheel fix 4
+            // for (int i = 162; i <= 254; i++) {
+            //    toReplace.Add(new ReplacerHelper("" + i.ToString("X2") + i.ToString("X2") + i.ToString("X2"), "212121")); // Color wheel fix
+            // }
 
-            for (int i = 1; i <= 8; i++) {
-                for (int j = 1; j <= 8; j++) {
-                    for (int k = 1; k <= 8; k++) {
-                        if (i != j || i != k) {
-                            toReplace.Add(new ReplacerHelper("f" + i + "f" + j + "f" + k, "212121")); // Color wheel
-                        }
-                    }
-                }
+            // toReplace.Add(new ReplacerHelper("a6a6a6", "212121")); // Color wheel fix 1
+            // toReplace.Add(new ReplacerHelper("707070", "212121")); // Color wheel fix 2
+            // toReplace.Add(new ReplacerHelper("9f9f9f", "212121")); // Color wheel fix 3
+            // toReplace.Add(new ReplacerHelper("a6a6a6", "212121")); // Color wheel fix 4
+
+            /*            for (int i = 1; i <= 8; i++) {
+                            for (int j = 1; j <= 8; j++) {
+                                for (int k = 1; k <= 8; k++) {
+                                    if (i != j || i != k) {
+                                        toReplace.Add(new ReplacerHelper("f" + i + "f" + j + "f" + k, "212121")); // Color wheel
+                                    }
+                                }
+                            }
+                        }*/
+
+            // end color wheel code ---------------------------------------------------------
+
+            if (File.Exists($"{inputPath}.bak")) {
+                string backupFilePath = $"{inputPath}.bak";
+                LogColor("let's use .bak file as input!\r\n", ConsoleColor.Yellow);
+                Console.WriteLine(inputPath);
+                Console.WriteLine(backupFilePath);
+
+                // delete sai2.exe
+                // copy sai2.exe.bak to sai2.exe
+                // delete sai2.exe.bak
+                // set inputPath to sai2.exe's path
             }
 
-            Console.Out.WriteLine($"making a backup copy of {inputPath}");
+            LogColor($"making a backup copy of [{inputPath}]...\r\n", ConsoleColor.Green);
+
             makeCopy(inputPath);
 
-            Console.Out.WriteLine($"replacing binary: {inputPath} -> {outputPath}");
+            LogColor($"replacing binary... [{inputPath}] -> [{outputPath}]\r\n", ConsoleColor.Green);
+            
             replaceHex(inputPath, outputPath, toReplace);
 
-            LogColor($"replaced file saved to [{outputPath}]", ConsoleColor.Green);
+            LogColor($"freshly modified file saved to [{outputPath}].\r\n", ConsoleColor.Green);
             LogColor("finished! press [enter] to close this window.", ConsoleColor.Green);
             Console.ReadKey();
         }
@@ -257,9 +298,9 @@ namespace SaiThemeColorChanger {
 
             if (!File.Exists(targetPath)) {
                 File.Copy(path, targetPath);
-                Console.Out.WriteLine("backup copy generated in " + targetPath);
+                LogColor($"backup copy generated in [{targetPath}]\r\n", ConsoleColor.Green);
             } else {
-                Console.Out.WriteLine("backup copy already exists in " + targetPath);
+                LogColor($"backup copy already exists in [{targetPath}]\r\n", ConsoleColor.Yellow);
             }
         }
 
@@ -345,7 +386,12 @@ namespace SaiThemeColorChanger {
                     }
                 }
             }
-            File.WriteAllBytes(resultFile, fileContent);
+
+            try {
+                File.WriteAllBytes(resultFile, fileContent);
+            } catch (Exception e) {
+                Log($"writing to file failed. {e}", ConsoleColor.White, ConsoleColor.Red);
+            }
         }
 
     }
