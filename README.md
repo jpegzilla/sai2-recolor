@@ -22,6 +22,13 @@ I'll include a default configuration file `theme.txt` which will provide a simpl
 
 disclaimer: I don't know a damn thing about c#.
 
+todo:
+
+-   fix color edge cases (#ffffff and #000000)
+-   add (signed) standalone to releases tab
+-   prevent aliasing
+-   fix enter key not immediately closing console window
+
 ## from original description:
 
 drag the sai2.exe file into the executable to change the ui colors.  be sure to run it from somewhere with the appropriate permissions. if you want to make your own custom colors, just edit the hex list in the source code.
