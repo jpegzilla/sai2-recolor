@@ -20,6 +20,8 @@ TOOLSPANELBG=efefef
 
 I'll include a default configuration file `theme.txt` which will provide a simple dark mode. however, you can edit the file to contain literally whatever color (6-character hex code, no alpha channel) you want for each category. then, follow the steps below from [the original creator](https://github.com/NotBoogie/SaiThemeColorChanger).
 
+disclaimer: I don't know a damn thing about c#.
+
 ## from original description:
 
 drag the sai2.exe file into the executable to change the ui colors.  be sure to run it from somewhere with the appropriate permissions. if you want to make your own custom colors, just edit the hex list in the source code.
