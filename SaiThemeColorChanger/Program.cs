@@ -47,7 +47,7 @@ namespace SaiThemeColorChanger
                 return;
             }
 
-            string outputPath = inputPath;   //Needs to be the same as the original or Sai throws a weird error with moonrunes 
+            string outputPath = inputPath;   //Needs to be the same as the original or Sai throws a weird error with moonrunes
 
             List<ReplacerHelper> toReplace = new List<ReplacerHelper>();
             //TODO could probably make this just read out of a text file is people decide my gray is horrible
@@ -59,16 +59,16 @@ namespace SaiThemeColorChanger
             toReplace.Add(new ReplacerHelper("e8e8e8", "3a3a3a")); //Scrollbar insides
             toReplace.Add(new ReplacerHelper("969696", "2a2a2a")); //Scrollbars
             toReplace.Add(new ReplacerHelper("f0f0f0", "212121")); //Tools background
-            toReplace.Add(new ReplacerHelper("d4d4d4", "212121")); //Inactive scrollbar 
+            toReplace.Add(new ReplacerHelper("d4d4d4", "212121")); //Inactive scrollbar
             toReplace.Add(new ReplacerHelper("b0b0b0", "111111")); //Active canvas background
             toReplace.Add(new ReplacerHelper("e0e0e0", "313131")); //Tools panel background
 
-            toReplace.Add(new ReplacerHelper("b1b1b1", "313131")); //Panel borders 1 
-            toReplace.Add(new ReplacerHelper("d0d0d0", "313131")); //Panel borders 2 
-            toReplace.Add(new ReplacerHelper("d8d8d8", "313131")); //Panel borders 3 
-            toReplace.Add(new ReplacerHelper("dadada", "313131")); //Panel borders 4 
-            toReplace.Add(new ReplacerHelper("e4e4e4", "313131")); //Panel borders 5 
-            toReplace.Add(new ReplacerHelper("f4f4f4", "313131")); //Panel borders 6  
+            toReplace.Add(new ReplacerHelper("b1b1b1", "313131")); //Panel borders 1
+            toReplace.Add(new ReplacerHelper("d0d0d0", "313131")); //Panel borders 2
+            toReplace.Add(new ReplacerHelper("d8d8d8", "313131")); //Panel borders 3
+            toReplace.Add(new ReplacerHelper("dadada", "313131")); //Panel borders 4
+            toReplace.Add(new ReplacerHelper("e4e4e4", "313131")); //Panel borders 5
+            toReplace.Add(new ReplacerHelper("f4f4f4", "313131")); //Panel borders 6
 
             toReplace.Add(new ReplacerHelper("c6c6c6", "707070")); //Panel separator button 1
 
@@ -118,10 +118,10 @@ namespace SaiThemeColorChanger
                 toReplace.Add(new ReplacerHelper("" + i.ToString("X2") + i.ToString("X2") + i.ToString("X2"), "212121")); //Color wheel fix
             }
 
-            toReplace.Add(new ReplacerHelper("a0a0a0", "212121")); //Color wheel fix 1
+            toReplace.Add(new ReplacerHelper("a6a6a6", "212121")); //Color wheel fix 1
             toReplace.Add(new ReplacerHelper("707070", "212121")); //Color wheel fix 2
             toReplace.Add(new ReplacerHelper("9f9f9f", "212121")); //Color wheel fix 3
-            toReplace.Add(new ReplacerHelper("a0a0a0", "212121")); //Color wheel fix 4
+            toReplace.Add(new ReplacerHelper("a6a6a6", "212121")); //Color wheel fix 4
 
 
 
@@ -133,12 +133,14 @@ namespace SaiThemeColorChanger
                     {
                         if(i != j || i != k)
                         {
-                            toReplace.Add(new ReplacerHelper("f" + i + "f" + j + "f" + k, "212121")); //Color wheel 
+                            toReplace.Add(new ReplacerHelper("f" + i + "f" + j + "f" + k, "212121")); //Color wheel
                         }
                     }
                 }
             }
 
+            System.Console.Out.WriteLine("Making a backup copy of: " + inputPath);
+            makeCopy(inputPath);
             System.Console.Out.WriteLine("Replacing stuff in: " + inputPath);
             replaceHex(inputPath, outputPath, toReplace);
             System.Console.Out.WriteLine("Replaced file saved to: " + outputPath);
@@ -148,13 +150,23 @@ namespace SaiThemeColorChanger
 
         //Fuggin fug fug
         //Cut the hex string -> byte array
-        public static byte[] GetByteArray(string str)
+/*        public static byte[] GetByteArray(string str)
         {
             //https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array
             return Enumerable.Range(0, str.Length)
                                 .Where(x => x % 2 == 0)
                                 .Select(x => System.Convert.ToByte(str.Substring(x, 2), 16))
                                 .ToArray();
+        } */
+        
+        public static byte[] GetByteArray(string str)
+        {
+            // https://stackoverflow.com/questions/311165/how-do-you-convert-a-byte-array-to-a-hexadecimal-string-and-vice-versa
+            int NumberChars = str.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = System.Convert.ToByte(str.Substring(i, 2), 16);
+            return bytes;
         }
 
         public static void makeCopy(string path)
