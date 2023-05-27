@@ -8,10 +8,14 @@
 
   <ItemGroup>
     <None Remove="README.txt" />
+    <None Remove="config.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="README.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="config.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

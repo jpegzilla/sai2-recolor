@@ -1,0 +1,62 @@
+﻿# primary application colors
+MainPanelColor=212121
+CanvasBackgroundColor=111111
+ActiveCanvasBg=111111
+
+# scrollbars
+ScrollbarInside=3a3a3a
+Scrollbar=2a2a2a
+InactiveScrollbar=212121
+
+# tools panel
+ToolsBackground=212121
+ToolsPanelBackground=313131
+
+# panel borders and separators
+PanelBorder1=313131
+PanelBorder2=313131
+PanelBorder3=313131
+PanelBorder4=313131
+PanelBorder5=313131
+PanelBorder6=313131
+PanelSeparatorButton1=707070
+
+# corner colors
+Corner1=111111
+Corner2=111111
+Corner3=2d2d2d
+Corner4=313131
+Corner5=313131
+Corner6=212121
+Corner7=212121
+
+# 'brown' (used in a few places, like the layer effect menu button)
+Brown1=a1a1a1
+Brown2=a1a1a1
+Brown3=ffab7f
+Brown4=ffab7f
+Brown5=ffab7f
+Brown6=ffab7f
+Brown7=ffab7f
+Brown8=ffab7f
+Brown9=ffab7f
+Brown10=ffab7f
+
+# 'blue' (the color for buttons and stuff)
+Blue1=ffab7f
+Blue2=ffab7f
+Blue3=ffab7f
+Blue4=a25e5e
+Blue5=855050
+Blue6=855050
+Blue7=b36b6b
+Blue8=a16060
+BlueCorner1=ec5e5e
+BlueCorner2=ff8a8a
+BlueCorner3=ff8080
+
+# canvas select
+CanvasSelectBorder1=a1a1a1
+CanvasSelectBorder2=a1a1a1
+CanvasSelectBorder3=a1a1a1
+CanvasSelectBorder4=a1a1a1
