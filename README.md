@@ -28,6 +28,7 @@ todo:
 -   add (signed) standalone to releases tab
 -   prevent aliasing
 -   fix enter key not immediately closing console window
+-   use temp file copied from backup during subsequent recolorings, rather than the modified `sai2.exe` file
 
 ## from original description:
 
