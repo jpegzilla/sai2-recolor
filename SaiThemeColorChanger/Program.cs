@@ -95,7 +95,7 @@ namespace SaiThemeColorChanger {
                 path = "defaultConfig.txt";
             }
 
-            string[] lines= File.ReadAllLines(path);
+            string[] lines = File.ReadAllLines(path);
             var output = new Dictionary<string, string>();
 
             foreach (string line in lines) {
@@ -246,17 +246,17 @@ namespace SaiThemeColorChanger {
                         }*/
 
             // end color wheel code ---------------------------------------------------------
+            string backupFilePath = @$"{inputPath}.bak";
 
-            if (File.Exists($"{inputPath}.bak")) {
-                string backupFilePath = $"{inputPath}.bak";
-                LogColor("let's use .bak file as input!\r\n", ConsoleColor.Yellow);
-                Console.WriteLine(inputPath);
-                Console.WriteLine(backupFilePath);
+            if (File.Exists(backupFilePath)) {
+                if (IsFileLocked(new FileInfo(backupFilePath))) {
+                    LogColor("your copy of sai2.exe is in use. please try again after closing this program as well as sai2.", ConsoleColor.Red);
+                    Environment.Exit(1);
+                }
 
-                // delete sai2.exe
-                // copy sai2.exe.bak to sai2.exe
-                // delete sai2.exe.bak
-                // set inputPath to sai2.exe's path
+                File.Delete(inputPath);
+                File.Copy(backupFilePath, inputPath);
+                File.Delete(backupFilePath);
             }
 
             LogColor($"making a backup copy of [{inputPath}]...\r\n", ConsoleColor.Green);
@@ -264,7 +264,7 @@ namespace SaiThemeColorChanger {
             makeCopy(inputPath);
 
             LogColor($"replacing binary... [{inputPath}] -> [{outputPath}]\r\n", ConsoleColor.Green);
-            
+
             replaceHex(inputPath, outputPath, toReplace);
 
             LogColor($"freshly modified file saved to [{outputPath}].\r\n", ConsoleColor.Green);
