@@ -5,20 +5,25 @@ recolors sai2.exe based on a text file containing the desired colors.
 text file should look like this (work in progress):
 
 ```
-PANELCOLOR=efefef
-CANVASBG=efefef
-SCROLLBARBG=efefef
-SCROLLBARFG=efefef
-TOOLSBG=efefef
-INACTIVEBTN=efefef
-PANELBORDER=efefef
-ACTIVECANVASBG=efefef
-TOOLSPANELBG=efefef
+MainPanelColor=EDA572
+CanvasBackgroundColor=1e1d26
+ActiveCanvasBg=1e1d26
+
+# scrollbars
+ScrollbarBackground=c7955c
+ScrollbarThumb=ffff00
+
+# buttons
+InactiveButton=21181b
+
+# tools panel
+ToolsBackground=212121
+ToolsPanelBackground=313131
 
 ...
 ```
 
-I'll include a default configuration file `theme.txt` which will provide a simple dark mode. however, you can edit the file to contain literally whatever color (6-character hex code, no alpha channel) you want for each category. then, follow the steps below from [the original creator](https://github.com/NotBoogie/SaiThemeColorChanger).
+I've included a default configuration file `config.txt` which will provide a simple dark mode. however, you can edit the file to contain literally whatever color (6-character hex code, no alpha channel afaik) you want for each category. then, follow the steps below from [the original creator](https://github.com/NotBoogie/SaiThemeColorChanger).
 
 disclaimer: I don't know a damn thing about c#.
 
