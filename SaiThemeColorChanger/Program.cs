@@ -82,7 +82,9 @@ namespace SaiThemeColorChanger {
             Console.WriteLine();
         }
 
-        // sai seems to "scramble" the hex color in an odd manner. this should correct for that
+        /// <summary>
+        /// converts hex colors between big <-> little endianness.
+        /// </summary>
         static string CorrectHexColor(string hex) {
             var output = hex.SplitInParts(2);
             output.Reverse();
