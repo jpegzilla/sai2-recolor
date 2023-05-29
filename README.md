@@ -33,6 +33,11 @@ todo:
 -   add (signed) standalone to releases tab
 -   prevent aliasing
 -   fix enter key not immediately closing console window
+-   allow file paths with spaces
+-   create a gui to modify the config
+-   allow choosing between themes
+-   port to rust probably
+-   read colors from offset database
 
 ## from original description:
 
