@@ -1,16 +1,16 @@
 ﻿# primary application colors
 # CanvasBackgroundColor is also the primary text color on panels, the highlight color on some tools
 # borders on some buttons and the color swap tool, text in some dropdown menus...and more
-MainPanelColor=D9A274
-CanvasBackgroundColor=1e1d26
-ActiveCanvasBg=1e1d26
+MainPanelColor=BE896A
+InactiveCanvasBackground=3A3941
+ActiveCanvasBackground=1e1d26
 
 # scrollbars
 ScrollbarBackground=c7955c
 ScrollbarThumb=ffff00
 
 # buttons
-InactiveButton=21181b
+InactiveButton=D08356
 
 # tools panel
 ToolsBackground=212121

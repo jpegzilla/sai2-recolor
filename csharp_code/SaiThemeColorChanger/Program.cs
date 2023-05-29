@@ -237,6 +237,16 @@ namespace SaiThemeColorChanger {
                     for (int i = 0; i < fileContent.Length; i++) {
                         if (!FindHex(fileContent, i, seeker)) continue;
 
+                        if (replacerHelper.Search == "f8f8f8") {
+                            Console.WriteLine("main panel color");
+                            Console.WriteLine($"location: {i}");
+                            Logger.LogColor($"\r\n[seeker] {replacerHelper.Search}", ConsoleColor.Yellow);
+                            Logger.PrintByteArray(seeker);
+                            Logger.LogColor($"[hider] {replacerHelper.Replace}", ConsoleColor.Yellow);
+                            Logger.PrintByteArray(hider);
+                            Console.WriteLine(" ");
+                        }
+
                         for (int j = 0; j < seeker.Length; j++) {
                             fileContent[i + j] = hider[j];
                         }
