@@ -1,4 +1,5 @@
 using SaiThemeUtils;
+using SaiThemeColorReplacement;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,25 +16,20 @@ namespace SaiThemeColorChanger {
             if (args.Length > 0)
                 inputPath = args[0];
 
-            // https://stackoverflow.com/a/34033925
-            string AddQuotesIfRequired(string path) {
-                return !string.IsNullOrWhiteSpace(path) ?
-                  path.Contains(" ") && (!path.StartsWith("\"") && !path.EndsWith("\"")) ?
-                  "\"" + path + "\"" : path :
-                  string.Empty;
-            }
-
             if (inputPath.Length == 0) {
                 Logger.LogColor("please drag the [sai2.exe] file into this window and press enter.\r\n", ConsoleColor.Green);
-                inputPath = @AddQuotesIfRequired(Console.ReadLine());
+                inputPath = Console.ReadLine();
+                // inputPath = @StringUtils.AddQuotesIfRequired(Console.ReadLine());
+
                 Console.WriteLine("\r\n");
-                while (!Directory.Exists(Path.GetDirectoryName(inputPath))) {
+
+                while (!File.Exists(inputPath)) {
                     Logger.LogColor($"[{inputPath}] is not a valid path.", ConsoleColor.Red);
                     inputPath = Console.ReadLine();
                 }
             }
 
-            if (!Directory.Exists(Path.GetDirectoryName(inputPath))) {
+            if (!File.Exists(inputPath)) {
                 Logger.LogColor($"[{inputPath}] is not a valid path.", ConsoleColor.Red);
                 Console.ReadKey();
                 return;
@@ -49,74 +45,58 @@ namespace SaiThemeColorChanger {
             // will complain that it's missing a "sai21.ini" file. you could just rename the .ini if you really wanted to.
             string outputPath = inputPath;
 
-            List<ReplacerHelper> toReplace = new List<ReplacerHelper>();
-            // Hex color code -> replacement (won't work with pure white and pure black, but everything else seems fine!)
-            // Basically this replaces left hex with the right hex.
-            // You can swap out the values to get other colors, I haven't noticed any issues using a version with these values modified
+            List<ReplacerHelper> colorsToReplace = InterfaceColors.ReplaceColors(config);
 
-            // main interface
-            toReplace.Add(new ReplacerHelper("f8f8f8", config.GetValueOrDefault("MainPanelColor", "212121")));
-            toReplace.Add(new ReplacerHelper("c0c0c0", config.GetValueOrDefault("InactiveCanvasBackground", "111111"))); // also affects slider bars
-            toReplace.Add(new ReplacerHelper("b0b0b0", config.GetValueOrDefault("ActiveCanvasBackground", "111111")));
+            //colorsToReplace.Add(new ReplacerHelper("f0f0f0", "212121")); // Tools background
+            //colorsToReplace.Add(new ReplacerHelper("e0e0e0", "313131")); // Tools panel background
 
-            // scrollbars
-            toReplace.Add(new ReplacerHelper("e8e8e8", config.GetValueOrDefault("ScrollbarBackground", "3a3a3a")));
-            toReplace.Add(new ReplacerHelper("969696", config.GetValueOrDefault("ScrollbarThumb", "2a2a2a")));
+            //colorsToReplace.Add(new ReplacerHelper("b1b1b1", "313131")); // Panel borders 1
+            //colorsToReplace.Add(new ReplacerHelper("d0d0d0", "313131")); // Panel borders 2
+            //colorsToReplace.Add(new ReplacerHelper("d8d8d8", "313131")); // Panel borders 3
+            //colorsToReplace.Add(new ReplacerHelper("dadada", "313131")); // Panel borders 4
+            //colorsToReplace.Add(new ReplacerHelper("e4e4e4", "313131")); // Panel borders 5
+            //colorsToReplace.Add(new ReplacerHelper("f4f4f4", "313131")); // Panel borders 6
 
-            // buttons
-            toReplace.Add(new ReplacerHelper("d4d4d4", config.GetValueOrDefault("InactiveButton", "212121")));
-            toReplace.Add(new ReplacerHelper("dca280", "ff0000"));
+            //colorsToReplace.Add(new ReplacerHelper("c6c6c6", "707070")); // Panel separator button 1
 
-            //toReplace.Add(new ReplacerHelper("f0f0f0", "212121")); // Tools background
-            //toReplace.Add(new ReplacerHelper("e0e0e0", "313131")); // Tools panel background
+            //colorsToReplace.Add(new ReplacerHelper("cecece", "111111")); // Corners 1
+            //colorsToReplace.Add(new ReplacerHelper("c9c9c9", "111111")); // Corners 2
+            //colorsToReplace.Add(new ReplacerHelper("eeeeee", "2d2d2d")); // Corners 3
+            //colorsToReplace.Add(new ReplacerHelper("dedede", "313131")); // Corners 4
+            //colorsToReplace.Add(new ReplacerHelper("b4b4b4", "313131")); // Corners 5
+            //colorsToReplace.Add(new ReplacerHelper("8c8c8c", "212121")); // Corners 6
+            //colorsToReplace.Add(new ReplacerHelper("7d7d7d", "212121")); // Corners 7
 
-            //toReplace.Add(new ReplacerHelper("b1b1b1", "313131")); // Panel borders 1
-            //toReplace.Add(new ReplacerHelper("d0d0d0", "313131")); // Panel borders 2
-            //toReplace.Add(new ReplacerHelper("d8d8d8", "313131")); // Panel borders 3
-            //toReplace.Add(new ReplacerHelper("dadada", "313131")); // Panel borders 4
-            //toReplace.Add(new ReplacerHelper("e4e4e4", "313131")); // Panel borders 5
-            //toReplace.Add(new ReplacerHelper("f4f4f4", "313131")); // Panel borders 6
+            //colorsToReplace.Add(new ReplacerHelper("204080", "a1a1a1")); // Brown 1
+            //colorsToReplace.Add(new ReplacerHelper("204172", "a1a1a1")); // Brown 2
 
-            //toReplace.Add(new ReplacerHelper("c6c6c6", "707070")); // Panel separator button 1
+            //colorsToReplace.Add(new ReplacerHelper("1c4da8", "ffab7f")); // Brown 3
+            //colorsToReplace.Add(new ReplacerHelper("234a93", "ffab7f")); // Brown 4
+            //colorsToReplace.Add(new ReplacerHelper("254177", "ffab7f")); // Brown 5
+            //colorsToReplace.Add(new ReplacerHelper("1f2e49", "ffab7f")); // Brown 6
+            //colorsToReplace.Add(new ReplacerHelper("436616", "ffab7f")); // Brown 7
+            //colorsToReplace.Add(new ReplacerHelper("22437f", "ffab7f")); // Brown 8
+            //colorsToReplace.Add(new ReplacerHelper("214d9e", "ffab7f")); // Brown 9
+            //colorsToReplace.Add(new ReplacerHelper("90b0e8", "ffab7f")); // Brown 10
 
-            //toReplace.Add(new ReplacerHelper("cecece", "111111")); // Corners 1
-            //toReplace.Add(new ReplacerHelper("c9c9c9", "111111")); // Corners 2
-            //toReplace.Add(new ReplacerHelper("eeeeee", "2d2d2d")); // Corners 3
-            //toReplace.Add(new ReplacerHelper("dedede", "313131")); // Corners 4
-            //toReplace.Add(new ReplacerHelper("b4b4b4", "313131")); // Corners 5
-            //toReplace.Add(new ReplacerHelper("8c8c8c", "212121")); // Corners 6
-            //toReplace.Add(new ReplacerHelper("7d7d7d", "212121")); // Corners 7
+            //colorsToReplace.Add(new ReplacerHelper("ff3050", "ffab7f")); // Blue 1
+            //colorsToReplace.Add(new ReplacerHelper("c02040", "ffab7f")); // Blue 2
+            //colorsToReplace.Add(new ReplacerHelper("90203b", "ffab7f")); // Blue 3
 
-            //toReplace.Add(new ReplacerHelper("204080", "a1a1a1")); // Brown 1
-            //toReplace.Add(new ReplacerHelper("204172", "a1a1a1")); // Brown 2
+            // colorsToReplace.Add(new ReplacerHelper("ffe3e3", "a25e5e")); // Blue 4
+            // colorsToReplace.Add(new ReplacerHelper("ffdbdb", "855050")); // Blue 5
+            // colorsToReplace.Add(new ReplacerHelper("ffd3d3", "855050")); // Blue 6
+            // colorsToReplace.Add(new ReplacerHelper("ffeddb", "b36b6b")); // Blue 7
+            // colorsToReplace.Add(new ReplacerHelper("fff1e3", "a16060")); // Blue 8
 
-            //toReplace.Add(new ReplacerHelper("1c4da8", "ffab7f")); // Brown 3
-            //toReplace.Add(new ReplacerHelper("234a93", "ffab7f")); // Brown 4
-            //toReplace.Add(new ReplacerHelper("254177", "ffab7f")); // Brown 5
-            //toReplace.Add(new ReplacerHelper("1f2e49", "ffab7f")); // Brown 6
-            //toReplace.Add(new ReplacerHelper("436616", "ffab7f")); // Brown 7
-            //toReplace.Add(new ReplacerHelper("22437f", "ffab7f")); // Brown 8
-            //toReplace.Add(new ReplacerHelper("214d9e", "ffab7f")); // Brown 9
-            //toReplace.Add(new ReplacerHelper("90b0e8", "ffab7f")); // Brown 10
+            //colorsToReplace.Add(new ReplacerHelper("ffcbcb", "ec5e5e")); // Blue corner 1
+            //colorsToReplace.Add(new ReplacerHelper("ffc4c4", "ff8a8a")); // Blue corner 2
+            //colorsToReplace.Add(new ReplacerHelper("ffbfbf", "ff8080")); // Blue corner 3
 
-            //toReplace.Add(new ReplacerHelper("ff3050", "ffab7f")); // Blue 1
-            //toReplace.Add(new ReplacerHelper("c02040", "ffab7f")); // Blue 2
-            //toReplace.Add(new ReplacerHelper("90203b", "ffab7f")); // Blue 3
-
-            // toReplace.Add(new ReplacerHelper("ffe3e3", "a25e5e")); // Blue 4
-            // toReplace.Add(new ReplacerHelper("ffdbdb", "855050")); // Blue 5
-            // toReplace.Add(new ReplacerHelper("ffd3d3", "855050")); // Blue 6
-            // toReplace.Add(new ReplacerHelper("ffeddb", "b36b6b")); // Blue 7
-            // toReplace.Add(new ReplacerHelper("fff1e3", "a16060")); // Blue 8
-
-            //toReplace.Add(new ReplacerHelper("ffcbcb", "ec5e5e")); // Blue corner 1
-            //toReplace.Add(new ReplacerHelper("ffc4c4", "ff8a8a")); // Blue corner 2
-            //toReplace.Add(new ReplacerHelper("ffbfbf", "ff8080")); // Blue corner 3
-
-            //toReplace.Add(new ReplacerHelper("548cd7", "a1a1a1")); // Canvas select border 1
-            //toReplace.Add(new ReplacerHelper("6e9ee0", "a1a1a1")); // Canvas select border 2
-            //toReplace.Add(new ReplacerHelper("b6cced", "a1a1a1")); // Canvas select border 3
-            //toReplace.Add(new ReplacerHelper("d9e4f8", "a1a1a1")); // Canvas select border 4
+            //colorsToReplace.Add(new ReplacerHelper("548cd7", "a1a1a1")); // Canvas select border 1
+            //colorsToReplace.Add(new ReplacerHelper("6e9ee0", "a1a1a1")); // Canvas select border 2
+            //colorsToReplace.Add(new ReplacerHelper("b6cced", "a1a1a1")); // Canvas select border 3
+            //colorsToReplace.Add(new ReplacerHelper("d9e4f8", "a1a1a1")); // Canvas select border 4
 
             // all colors above have values in config.txt now
 
@@ -130,19 +110,19 @@ namespace SaiThemeColorChanger {
             // should be computed using the background color.
 
             // for (int i = 162; i <= 254; i++) {
-            //    toReplace.Add(new ReplacerHelper("" + i.ToString("X2") + i.ToString("X2") + i.ToString("X2"), "212121")); // Color wheel fix
+            //    colorsToReplace.Add(new ReplacerHelper("" + i.ToString("X2") + i.ToString("X2") + i.ToString("X2"), "212121")); // Color wheel fix
             // }
 
-            // toReplace.Add(new ReplacerHelper("a6a6a6", "212121")); // Color wheel fix 1
-            // toReplace.Add(new ReplacerHelper("707070", "212121")); // Color wheel fix 2
-            // toReplace.Add(new ReplacerHelper("9f9f9f", "212121")); // Color wheel fix 3
-            // toReplace.Add(new ReplacerHelper("a6a6a6", "212121")); // Color wheel fix 4
+            // colorsToReplace.Add(new ReplacerHelper("a6a6a6", "212121")); // Color wheel fix 1
+            // colorsToReplace.Add(new ReplacerHelper("707070", "212121")); // Color wheel fix 2
+            // colorsToReplace.Add(new ReplacerHelper("9f9f9f", "212121")); // Color wheel fix 3
+            // colorsToReplace.Add(new ReplacerHelper("a6a6a6", "212121")); // Color wheel fix 4
 
             /*            for (int i = 1; i <= 8; i++) {
                             for (int j = 1; j <= 8; j++) {
                                 for (int k = 1; k <= 8; k++) {
                                     if (i != j || i != k) {
-                                        toReplace.Add(new ReplacerHelper("f" + i + "f" + j + "f" + k, "212121")); // Color wheel
+                                        colorsToReplace.Add(new ReplacerHelper("f" + i + "f" + j + "f" + k, "212121")); // Color wheel
                                     }
                                 }
                             }
@@ -168,7 +148,7 @@ namespace SaiThemeColorChanger {
 
             Logger.LogColor($"replacing binary... [{inputPath}] -> [{outputPath}]\r\n", ConsoleColor.Green);
 
-            ReplaceHex(inputPath, outputPath, toReplace);
+            ReplaceHex(inputPath, outputPath, colorsToReplace);
 
             Logger.LogColor($"freshly modified file saved to [{outputPath}].\r\n", ConsoleColor.Green);
             Logger.LogColor("finished! press [enter] to close this window.", ConsoleColor.Green);
@@ -195,38 +175,43 @@ namespace SaiThemeColorChanger {
             return true;
         }
 
-        public static void ReplaceHex(string targetFile, string resultFile, string searchString, string replacementString) {
+        // public static void ReplaceHex(string targetFile, string resultFile, string searchString, string replacementString) {
 
+        //     var targetDirectory = Path.GetDirectoryName(resultFile);
+        //     if (targetDirectory == null) return;
+        //     Directory.CreateDirectory(targetDirectory);
+
+        //     byte[] fileContent = File.ReadAllBytes(targetFile);
+
+        //     byte[] seeker = GetByteArray(searchString);
+        //     byte[] hider = GetByteArray(replacementString);
+
+        //     for (int i = 0; i < fileContent.Length; i++) {
+        //         if (!FindHex(fileContent, i, seeker)) continue;
+        //         for (int j = 0; j < seeker.Length; j++) {
+        //             fileContent[i + j] = hider[j];
+        //         }
+        //     }
+
+        //     File.WriteAllBytes(resultFile, fileContent);
+        // }
+
+        public static void ReplaceHex(string targetFile, string resultFile, List<ReplacerHelper> colorsToReplace) {
             var targetDirectory = Path.GetDirectoryName(resultFile);
             if (targetDirectory == null) return;
             Directory.CreateDirectory(targetDirectory);
 
             byte[] fileContent = File.ReadAllBytes(targetFile);
 
-            byte[] seeker = GetByteArray(searchString);
-            byte[] hider = GetByteArray(replacementString);
-
-            for (int i = 0; i < fileContent.Length; i++) {
-                if (!FindHex(fileContent, i, seeker)) continue;
-                for (int j = 0; j < seeker.Length; j++) {
-                    fileContent[i + j] = hider[j];
-                }
-            }
-
-            File.WriteAllBytes(resultFile, fileContent);
-        }
-
-        public static void ReplaceHex(string targetFile, string resultFile, List<ReplacerHelper> toReplace) {
-
-            var targetDirectory = Path.GetDirectoryName(resultFile);
-            if (targetDirectory == null) return;
-            Directory.CreateDirectory(targetDirectory);
-
-            byte[] fileContent = File.ReadAllBytes(targetFile);
-
-            foreach (ReplacerHelper replacerHelper in toReplace) {
+            foreach (ReplacerHelper replacerHelper in colorsToReplace) {
                 byte[] seeker = GetByteArray(replacerHelper.Search);
                 byte[] hider = GetByteArray(replacerHelper.Replace);
+
+                Logger.LogColor($"\r\n[seeker] {replacerHelper.Search}", ConsoleColor.Yellow);
+                Logger.PrintByteArray(seeker);
+                Logger.LogColor($"[hider] {replacerHelper.Replace}", ConsoleColor.Yellow);
+                Logger.PrintByteArray(hider);
+                Console.WriteLine(" ");
 
                 bool ringFlag = false;
 
@@ -273,6 +258,5 @@ namespace SaiThemeColorChanger {
                 Logger.Log($"writing to file failed. {e}", ConsoleColor.White, ConsoleColor.Red);
             }
         }
-
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace SaiThemeUtils {
     // https://stackoverflow.com/questions/4133377/splitting-a-string-number-every-nth-character-number
@@ -96,7 +97,7 @@ namespace SaiThemeUtils {
 
     public class Logger {
         public static void Log(string msg, ConsoleColor? fg = null, ConsoleColor? bg = null) {
-            if (fg == null && bg == null) {
+            if (fg == null || bg == null) {
                 Console.ResetColor();
             } else {
                 Console.ForegroundColor = (ConsoleColor)fg;
@@ -124,6 +125,16 @@ namespace SaiThemeUtils {
             }
 
             Console.WriteLine();
+        }
+
+        // https://gist.github.com/aal89/150c2af2f9dfd38dafaba4ac55317366
+        public static void PrintByteArray(byte[] bytes) {
+            var sb = new StringBuilder("new byte[] { ");
+            foreach (var b in bytes) {
+                sb.Append(b + ", ");
+            }
+            sb.Append("}");
+            Console.WriteLine(sb.ToString());
         }
     }
 
