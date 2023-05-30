@@ -19,17 +19,6 @@ namespace SaiThemeUtils {
 
             return output;
         }
-
-    }
-
-    public class StringUtils {
-        // https://stackoverflow.com/a/34033925
-        public static string AddQuotesIfRequired(string path) {
-            return !string.IsNullOrWhiteSpace(path) ?
-              path.Contains(" ") && (!path.StartsWith("\"") && !path.EndsWith("\"")) ?
-              "\"" + path + "\"" : path :
-              string.Empty;
-        }
     }
 
     public class ReplacerHelper {
